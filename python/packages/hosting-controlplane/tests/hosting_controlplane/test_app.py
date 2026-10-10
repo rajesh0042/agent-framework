@@ -240,6 +240,45 @@ async def test_sse_stream_replays_backlog_then_live_events(control_plane: Contro
     assert event_types == ["event: run.registered", "event: run.status_changed"]
 
 
+async def test_sse_stream_does_not_lose_event_persisted_during_initial_replay(control_plane: ControlPlane) -> None:
+    from agent_framework_hosting_controlplane import RunEventType
+    from agent_framework_hosting_controlplane._app import _sse_event_generator
+
+    run = await control_plane.launch("report")
+    original_list_events = control_plane.list_events
+    first_call = True
+
+    async def list_events_with_concurrent_publish(run_id: str, *, after_seq: int | None = None):  # type: ignore[no-untyped-def]
+        nonlocal first_call
+        events = await original_list_events(run_id, after_seq=after_seq)
+        if first_call:
+            first_call = False
+            await control_plane._emit(run_id, RunEventType.RUN_RECONCILED)  # pyright: ignore[reportPrivateUsage]
+        return events
+
+    control_plane.list_events = list_events_with_concurrent_publish  # type: ignore[method-assign]
+
+    class _DisconnectAfterCatchupRequest:
+        calls = 0
+
+        async def is_disconnected(self) -> bool:
+            self.calls += 1
+            return self.calls == 1
+
+    frames = [
+        frame
+        async for frame in _sse_event_generator(
+            control_plane,
+            run.id,
+            _DisconnectAfterCatchupRequest(),
+            after_seq=None,
+        )
+    ]  # type: ignore[arg-type]
+
+    ids = [line for frame in frames for line in frame.splitlines() if line.startswith("id:")]
+    assert ids == ["id: 1", "id: 2", "id: 3"]
+
+
 # Note: a real end-to-end streaming request through `create_app`'s SSE route is deliberately not
 # exercised with `httpx.ASGITransport` here. `ASGITransport.handle_async_request` runs the whole
 # ASGI call to completion before returning a `Response`/stream to the test client, which means it

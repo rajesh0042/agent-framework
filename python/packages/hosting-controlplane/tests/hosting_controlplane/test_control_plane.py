@@ -390,6 +390,47 @@ async def test_out_of_order_webhook_is_dropped_not_applied() -> None:
 
     updated = await control_plane.get_run(run.id)
     assert updated.status == RunStatus.SUCCEEDED  # The stale "in_progress" delivery must not regress status.
+    assert updated.failure is None
+    assert updated.github_run is not None
+    assert updated.github_run.conclusion == "success"
+
+
+async def test_out_of_order_failed_webhook_does_not_attach_failure_to_success() -> None:
+    control_plane, _ = await _make_control_plane()
+    run = await control_plane.launch("report")
+
+    await control_plane.ingest_webhook(
+        event_name="workflow_run",
+        payload={
+            "workflow_run": {
+                "id": 42,
+                "display_title": f"foundry-dag/report/{run.id}",
+                "status": "completed",
+                "conclusion": "success",
+            }
+        },
+        signature_header=None,
+        raw_body=b"{}",
+    )
+    await control_plane.ingest_webhook(
+        event_name="workflow_run",
+        payload={
+            "workflow_run": {
+                "id": 42,
+                "display_title": f"foundry-dag/report/{run.id}",
+                "status": "completed",
+                "conclusion": None,
+            }
+        },
+        signature_header=None,
+        raw_body=b"{}",
+    )
+
+    updated = await control_plane.get_run(run.id)
+    assert updated.status == RunStatus.SUCCEEDED
+    assert updated.failure is None
+    assert updated.github_run is not None
+    assert updated.github_run.conclusion == "success"
 
 
 async def test_ingest_webhook_for_unknown_run_is_ignored() -> None:

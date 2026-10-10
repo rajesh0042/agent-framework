@@ -139,7 +139,7 @@ class ControlPlane:
         self.webhook_secret = webhook_secret
         self.event_broker = event_broker or EventBroker()
         self._clock = clock
-        self._run_locks: dict[str, asyncio.Lock] = {}
+        self._run_locks = tuple(asyncio.Lock() for _ in range(64))
 
     # ----------------------------------------------------------------- #
     # Registration
@@ -505,13 +505,7 @@ class ControlPlane:
     # ----------------------------------------------------------------- #
 
     def _lock_for(self, key: str) -> asyncio.Lock:
-        # Safe without an outer lock: asyncio coroutines are cooperatively scheduled, and there is
-        # no `await` between the dict lookup and insertion below, so this cannot race.
-        lock = self._run_locks.get(key)
-        if lock is None:
-            lock = asyncio.Lock()
-            self._run_locks[key] = lock
-        return lock
+        return self._run_locks[hash(key) % len(self._run_locks)]
 
     async def _emit(
         self,
@@ -546,9 +540,7 @@ class ControlPlane:
                 logger.debug(
                     "Ignoring out-of-order run transition for %s: %s -> %s", run_id, run.status, candidate_status
                 )
-                if not changed_github_run:
-                    return run
-                candidate_status = run.status
+                return run
             updated = run.model_copy(
                 update={
                     "status": candidate_status,
@@ -588,9 +580,7 @@ class ControlPlane:
                     state.status,
                     candidate_status,
                 )
-                if not changed_job:
-                    return state
-                candidate_status = state.status
+                return state
             updated = state.model_copy(
                 update={
                     "status": candidate_status,

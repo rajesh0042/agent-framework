@@ -177,26 +177,27 @@ async def _sse_event_generator(
     always releases the broker subscription through the `with` block below, so
     a dropped connection cannot leak a subscriber slot.
     """
-    backlog = await control_plane.list_events(run_id, after_seq=after_seq)
     last_seq = after_seq
-    for event in backlog:
-        yield _format_sse(event)
-        last_seq = event.seq
 
     try:
         with control_plane.event_broker.subscribe(run_id) as queue:
             while True:
+                events = await control_plane.list_events(run_id, after_seq=last_seq)
+                for event in events:
+                    yield _format_sse(event)
+                    last_seq = event.seq
+                if events:
+                    # More backlog may have been persisted concurrently with the list_events()
+                    # call above (e.g. between its internal snapshot and this generator resuming).
+                    # Re-poll immediately instead of checking for disconnection, so a client that's
+                    # still connected never has a gap in the delivered sequence.
+                    continue
                 if await request.is_disconnected():
                     return
                 try:
-                    event = await asyncio.wait_for(queue.get(), timeout=_SSE_POLL_TIMEOUT_SECONDS)
+                    await asyncio.wait_for(queue.get(), timeout=_SSE_POLL_TIMEOUT_SECONDS)
                 except asyncio.TimeoutError:
                     yield ": heartbeat\n\n"
-                    continue
-                if last_seq is not None and event.seq <= last_seq:
-                    continue  # Already sent as part of the backlog above; avoid duplicate delivery.
-                last_seq = event.seq
-                yield _format_sse(event)
     except SubscriberLimitExceededError as exc:
         yield f"event: error\ndata: {json.dumps({'detail': str(exc)})}\n\n"
 
