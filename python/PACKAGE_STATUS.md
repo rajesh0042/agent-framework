@@ -38,6 +38,7 @@ Status is grouped into these buckets:
 | `agent-framework-github-copilot` | `python/packages/github_copilot` | `released` |
 | `agent-framework-hosting` | `python/packages/hosting` | `alpha` |
 | `agent-framework-hosting-a2a` | `python/packages/hosting-a2a` | `alpha` |
+| `agent-framework-hosting-controlplane` | `python/packages/hosting-controlplane` | `alpha` |
 | `agent-framework-hosting-mcp` | `python/packages/hosting-mcp` | `alpha` |
 | `agent-framework-hosting-responses` | `python/packages/hosting-responses` | `alpha` |
 | `agent-framework-hosting-telegram` | `python/packages/hosting-telegram` | `alpha` |
