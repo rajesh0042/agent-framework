@@ -10,7 +10,7 @@ tested without deploying Foundry agents.
 From the `python` directory, run:
 
 ```bash
-uv run python packages/hosting-controlplane/samples/generate_echo_dag.py
+uv run python samples/04-hosting/github_actions_dag/generate_echo_dag.py
 ```
 
 This writes `.github/workflows/echo-dag.yml` and prints its content-hash version.
