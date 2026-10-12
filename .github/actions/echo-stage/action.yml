@@ -1,0 +1,58 @@
+name: Echo DAG stage
+description: Echo the current DAG stage
+
+inputs:
+  node-id:
+    description: DAG node identifier
+    required: true
+  framework-run-id:
+    description: Framework run identifier
+    required: true
+  agent-id:
+    description: Placeholder agent identifier
+    required: false
+  agent-version:
+    description: Placeholder agent version
+    required: false
+  project-endpoint:
+    description: Placeholder project endpoint
+    required: false
+  input-mapping-json:
+    description: Input mapping generated for this node
+    required: false
+  timeout-seconds:
+    description: Node timeout
+    required: false
+  max-attempts:
+    description: Maximum node attempts
+    required: false
+  backoff-seconds:
+    description: Retry delay
+    required: false
+  upstream-outputs-json:
+    description: References to upstream node outputs
+    required: false
+  resume-checkpoint-uri:
+    description: Optional checkpoint reference
+    required: false
+
+outputs:
+  output-ref:
+    description: Synthetic output reference for downstream stages
+    value: ${{ steps.echo.outputs.output-ref }}
+  checkpoint-ref:
+    description: Empty checkpoint reference
+    value: ${{ steps.echo.outputs.checkpoint-ref }}
+
+runs:
+  using: composite
+  steps:
+    - id: echo
+      shell: bash
+      env:
+        NODE_ID: ${{ inputs.node-id }}
+      run: |
+        stage="${NODE_ID#stage_}"
+        echo "Running stage ${stage}"
+        echo "output-ref=echo://stage/${stage}" >> "$GITHUB_OUTPUT"
+        echo "checkpoint-ref=" >> "$GITHUB_OUTPUT"

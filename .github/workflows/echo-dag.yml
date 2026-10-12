@@ -1,0 +1,330 @@
+{
+  "jobs": {
+    "stage_1": {
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-1",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_1",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{}"
+          }
+        }
+      ]
+    },
+    "stage_10": {
+      "needs": [
+        "stage_9"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-10",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_10",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_9\": \"${{ needs.stage_9.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_2": {
+      "needs": [
+        "stage_1"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-2",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_2",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_1\": \"${{ needs.stage_1.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_3": {
+      "needs": [
+        "stage_2"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-3",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_3",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_2\": \"${{ needs.stage_2.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_4": {
+      "needs": [
+        "stage_3"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-4",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_4",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_3\": \"${{ needs.stage_3.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_5": {
+      "needs": [
+        "stage_4"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-5",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_5",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_4\": \"${{ needs.stage_4.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_6": {
+      "needs": [
+        "stage_5"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-6",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_6",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_5\": \"${{ needs.stage_5.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_7": {
+      "needs": [
+        "stage_6"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-7",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_7",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_6\": \"${{ needs.stage_6.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_8": {
+      "needs": [
+        "stage_7"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-8",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_8",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_7\": \"${{ needs.stage_7.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    },
+    "stage_9": {
+      "needs": [
+        "stage_8"
+      ],
+      "outputs": {
+        "checkpoint_ref": "${{ steps.invoke.outputs.checkpoint-ref }}",
+        "output_ref": "${{ steps.invoke.outputs.output-ref }}"
+      },
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "invoke",
+          "uses": "./.github/actions/echo-stage",
+          "with": {
+            "agent-id": "echo-stage-9",
+            "agent-version": "",
+            "backoff-seconds": "0.0",
+            "framework-run-id": "${{ inputs.framework_run_id }}",
+            "input-mapping-json": "{}",
+            "max-attempts": "1",
+            "node-id": "stage_9",
+            "project-endpoint": "",
+            "resume-checkpoint-uri": "${{ inputs.resume_checkpoint_uri }}",
+            "timeout-seconds": "",
+            "upstream-outputs-json": "{\"stage_8\": \"${{ needs.stage_8.outputs.output_ref }}\"}"
+          }
+        }
+      ]
+    }
+  },
+  "name": "Foundry DAG: ten-stage-echo",
+  "on": {
+    "workflow_dispatch": {
+      "inputs": {
+        "dag_id": {
+          "description": "The compiled DAG id this run belongs to.",
+          "required": true,
+          "type": "string"
+        },
+        "dag_version": {
+          "description": "The compiled DAG content-hash version this run belongs to.",
+          "required": true,
+          "type": "string"
+        },
+        "framework_run_id": {
+          "description": "Unique framework-assigned run id, used to correlate this dispatch.",
+          "required": true,
+          "type": "string"
+        },
+        "inputs_json": {
+          "default": "{}",
+          "description": "JSON-encoded run inputs (identifiers/URIs only, not large payloads).",
+          "required": false,
+          "type": "string"
+        },
+        "resume_checkpoint_uri": {
+          "default": "",
+          "description": "Optional checkpoint reference to resume from.",
+          "required": false,
+          "type": "string"
+        }
+      }
+    }
+  },
+  "permissions": {
+    "contents": "read",
+    "id-token": "write"
+  },
+  "run-name": "foundry-dag/${{ inputs.dag_id }}/${{ inputs.framework_run_id }}"
+}
